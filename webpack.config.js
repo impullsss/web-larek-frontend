@@ -24,6 +24,7 @@ const config = {
     open: true,
     host: "localhost",
     watchFiles: ["src/pages/*.html"],
+    port:8080,
     hot: true
   },
   plugins: [

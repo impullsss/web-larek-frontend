@@ -6,6 +6,7 @@ export interface Product {
     id:string;
     description:string;
     title:string;
+    image:string;
     category:ProductCategory;
     price:number | null
 }
@@ -23,3 +24,8 @@ export interface OrderSuccess {
     id:string;
     total:number;
   }
+
+export interface ProductList {
+    count: number;
+    items:Product[];
+}
