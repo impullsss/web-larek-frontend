@@ -9,7 +9,8 @@ export class CartModel {
     this._cards.push(card);
   }
   deleteCard(card: Product) {
-    this._cards = this._cards.filter(cartCard => cartCard.id !== card.id);
+    const deletedIndex = this._cards.lastIndexOf(card);
+    this._cards = this._cards.filter((_, index) => index !== deletedIndex);
   }
   getCards() {
     return this._cards;

@@ -1,6 +1,6 @@
 
 export type ProductCategory = 'софт-скил'|'другое'|'дополнительное'|'хард-скил'|'кнопка';
-
+export type OrderStage = 'selectPaymentType' | 'selectEmailPhone' | 'success';
 
 export interface Product {
     id:string;

@@ -12,7 +12,7 @@ constructor(modalElement: HTMLElement, content: HTMLElement, protected page: HTM
   this.closeButton = modalElement.querySelector('.modal__close');
   this._content = modalElement.querySelector('.modal__content');
 
-  this._content.appendChild(content);
+  if (content) this._content.appendChild(content);
   this.closeButton.addEventListener('click', this.close.bind(this));
   this.modalElement.addEventListener('click', this.close.bind(this));
   this.modalElement.querySelector('.modal__container').addEventListener('click', event => event.stopPropagation());
@@ -28,6 +28,11 @@ open() {
 close() {
   this.modalElement.classList.remove('modal_active');
   this.page.style.overflow = 'auto';
+}
+
+setContent(content: HTMLElement){
+  this._content.innerHTML = '';
+  this._content.appendChild(content);
 }
 
 }

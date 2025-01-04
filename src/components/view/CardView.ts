@@ -26,7 +26,7 @@ export class CardView {
         const cardImage = cardElement.querySelector('.card__image') as HTMLImageElement;
         const cardPrice = cardElement.querySelector('.card__price');
         const cardDescription = cardElement.querySelector('.card__text');
-        const cardButton = cardElement.querySelector('.card__button');
+        const cardButton = cardElement.querySelector('.card__button') as HTMLButtonElement;
 
         cardCategory.textContent = cardData.category;
         this.updateCategory(cardCategory, cardData.category)
@@ -35,13 +35,21 @@ export class CardView {
         cardImage.alt = cardTitle.textContent;
         cardPrice.textContent = this.getPrice(cardData.price);
         cardDescription.textContent = cardData.description;
-        cardButton.addEventListener('click', () => this.events.emit('cart:addCard', { card: cardData }));
+
+        if (cardData.price){
+          cardButton.textContent = 'Купить';
+          cardButton.addEventListener('click', () => this.events.emit('cart:addCard', { card: cardData }));
+        } else {
+          cardButton.textContent = 'Не продается';
+          cardButton.disabled = true;
+        }
+
         return cardElement;
 
     } 
     // Метод для иницилизации карточки на странице
     getCatalogCardElement (cardData:Product) {
-      const cardElement = this._cardPreviewTemplate.content.querySelector('.card').cloneNode(true) as HTMLElement;
+      const cardElement = this._cardCatalogTemplate.content.querySelector('.card').cloneNode(true) as HTMLElement;
         const cardCategory = cardElement.querySelector('.card__category');
         const cardTitle = cardElement.querySelector('.card__title');
         const cardImage = cardElement.querySelector('.card__image') as HTMLImageElement;
