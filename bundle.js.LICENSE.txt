@@ -1,1 +1,73 @@
+/*! ../../utils/constants */
+
+/*! ./components/base/api */
+
+/*! ./components/base/events */
+
+/*! ./components/model/CardModel */
+
+/*! ./components/model/CartModel */
+
+/*! ./components/model/OrderModel */
+
+/*! ./components/view/CardView */
+
+/*! ./components/view/CartView */
+
+/*! ./components/view/ModalView */
+
+/*! ./components/view/OrderView */
+
+/*! ./scss/styles.scss */
+
+/*! ./utils/constants */
+
 /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
+
+/*!**********************!*\
+  !*** ./src/index.ts ***!
+  \**********************/
+
+/*!******************************!*\
+  !*** ./src/scss/styles.scss ***!
+  \******************************/
+
+/*!********************************!*\
+  !*** ./src/utils/constants.ts ***!
+  \********************************/
+
+/*!************************************!*\
+  !*** ./src/components/base/api.ts ***!
+  \************************************/
+
+/*!***************************************!*\
+  !*** ./src/components/base/events.ts ***!
+  \***************************************/
+
+/*!*****************************************!*\
+  !*** ./src/components/view/CardView.ts ***!
+  \*****************************************/
+
+/*!*****************************************!*\
+  !*** ./src/components/view/CartView.ts ***!
+  \*****************************************/
+
+/*!******************************************!*\
+  !*** ./src/components/view/ModalView.ts ***!
+  \******************************************/
+
+/*!******************************************!*\
+  !*** ./src/components/view/OrderView.ts ***!
+  \******************************************/
+
+/*!*******************************************!*\
+  !*** ./src/components/model/CardModel.ts ***!
+  \*******************************************/
+
+/*!*******************************************!*\
+  !*** ./src/components/model/CartModel.ts ***!
+  \*******************************************/
+
+/*!********************************************!*\
+  !*** ./src/components/model/OrderModel.ts ***!
+  \********************************************/
