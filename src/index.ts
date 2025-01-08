@@ -1,3 +1,4 @@
+import { ApiController } from './components/ApiController';
 import { Api } from './components/base/api';
 import { EventEmitter } from './components/base/events';
 import { CardModel } from './components/model/CardModel';
@@ -7,6 +8,7 @@ import { CardView } from './components/view/CardView';
 import { CartView } from './components/view/CartView';
 import { ModalView } from './components/view/ModalView';
 import { OrderView } from './components/view/OrderView';
+import { PageView } from './components/view/PageView';
 import './scss/styles.scss';
 import { OrderStage, Product } from './types';
 import { API_URL } from './utils/constants';
@@ -18,38 +20,49 @@ const page = document.querySelector('.page') as HTMLElement;
 const cartElement = document.querySelector('.basket') as HTMLElement;
 const cardPreviewTemplate = document.querySelector('#card-preview') as HTMLTemplateElement;
 const cardCatalogTemplate = document.querySelector('#card-catalog') as HTMLTemplateElement;
-const cartButton = document.querySelector('.header__basket') as HTMLElement;
-const galleryElement = document.querySelector('.gallery');
 const modalElement = document.querySelector('#modal-container');
 
 const event = new EventEmitter();
 const api = new Api(API_URL);
-const cardModel = new CardModel(api);
+const cardModel = new CardModel();
 const cardView = new CardView(cardPreviewTemplate,cardCatalogTemplate, event);
 const cartView = new CartView(cartElement, event);
 const orderView = new OrderView(orderFormElement, orderContactFormElement, orderSuccessTemplate, event);
+const pageView = new PageView(page);
+
+const apiController = new ApiController(api);
 const cartModel = new CartModel();
 
 cartView.addCartItems([], 0);
 
 const cartModal = new ModalView(modalElement.cloneNode(true) as HTMLElement, cartView.getCartElement(), page, event, 'cartModal');
 const orderModal = new ModalView(modalElement.cloneNode(true) as HTMLElement, null, page, event, 'orderModal');
-const orderModel = new OrderModel('selectPaymentType', [], api);
-const cardModals: ModalView[] = [];
+const orderModel = new OrderModel('selectPaymentType', []);
+let cardModals: ModalView[] = [];
 
 async function initPage() {
-    const cardsData = await cardModel.getCardsData();
+    const rawCardsData = await apiController.getCardsData();
+    cardModel.setCardsData(rawCardsData.items);
+
+    const cardsData = cardModel.getCardsData();
     const cardsElement = cardsData.map((cardData) => {
         const cardElement = cardView.getCatalogCardElement(cardData);
         cardElement.addEventListener('click', () => event.emit('modal:open', { id: cardData.id }))
         return cardElement;
     });
-    cardsElement.forEach(cardElement => {
-        galleryElement.appendChild(cardElement)
-    });
+
+    pageView.initGallery(cardsElement);
+
+    generatePreviewCardElements();
+}
+
+function generatePreviewCardElements() {
+    const cardsData = cardModel.getCardsData();
+    const cartItems = cartModel.getCards();
+    cardModals = [];
 
     cardsData.forEach(cardData => {
-        const cardElement = cardView.getPreviewCardElement(cardData)
+        const cardElement = cardView.getPreviewCardElement(cardData, !cardData.price || cartItems.includes(cardData))
         const modal = new ModalView(modalElement.cloneNode(true) as HTMLElement, cardElement, page, event, cardData.id);
         cardModals.push(modal);
     });
@@ -67,16 +80,20 @@ event.on('cart:addCard', (options: { card: Product }) => {
     const cartItems = cartModel.getCards();
     const cartTotal = cartModel.getTotalSum();
     cartView.addCartItems(cartItems, cartTotal);
-    cartButton.querySelector('.header__basket-counter').textContent = cartModel.getCount().toString();
+    pageView.setCartProductsCount(cartModel.getCount());
     cardModals.find(modal => modal.id === card.id).close();
+
+    generatePreviewCardElements();
 });
 
-event.on('cart:deleteCard', (card: Product) => {
+event.on('cart:deleteCard', async (card: Product) => {
     cartModel.deleteCard(card);
     const cartItems = cartModel.getCards();
     const cartTotal = cartModel.getTotalSum();
     cartView.addCartItems(cartItems, cartTotal);
-    cartButton.querySelector('.header__basket-counter').textContent = cartModel.getCount().toString();
+    pageView.setCartProductsCount(cartModel.getCount());
+
+    generatePreviewCardElements();
 });
 
 event.on('order:start', () => {
@@ -91,7 +108,7 @@ event.on('order:start', () => {
     cartModel.clear();
     cartView.addCartItems([], 0);
     cartModal.setContent(cartView.getCartElement());
-    cartButton.querySelector('.header__basket-counter').textContent = cartModel.getCount().toString();
+    pageView.setCartProductsCount(cartModel.getCount());
 })
 
 event.on('order:setPaymentType', (options: { paymentType: string }) => {
@@ -158,8 +175,8 @@ event.on('order:setPhone', (options: { phone: string }) => {
 
 event.on('order:finish', async () => {
     const order = orderModel.getOrder();
-    await orderModel.finishOrder();
     const orderFormElement = orderView.getSuccessElement(order);
+    await apiController.postOrder(order);
     orderModal.close();
     orderModal.setContent(orderFormElement);
     orderModal.open();
@@ -169,6 +186,6 @@ event.on('order:success', () => {
     orderModal.close();
 })
 
-cartButton.addEventListener('click', () => cartModal.open());
+pageView.getCartButtonElement().addEventListener('click', () => cartModal.open());
 
 initPage();

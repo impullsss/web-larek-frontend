@@ -1,6 +1,4 @@
-import { Order, OrderStage, Product } from "../../types";
-import { Api } from "../base/api";
-
+import { Order, OrderStage } from "../../types";
 
 export class OrderModel {
   order: Order = {
@@ -12,7 +10,7 @@ export class OrderModel {
     items: []
   }
 
-  constructor(protected currentStage: OrderStage, itemsId: string[], protected api: Api) {
+  constructor(protected currentStage: OrderStage, itemsId: string[]) {
     this.order.items = itemsId;
   }
 
@@ -92,10 +90,6 @@ export class OrderModel {
     }
 
     return null;
-  }
-
-  async finishOrder(){
-    await this.api.post('/order', this.order);
   }
 
 }

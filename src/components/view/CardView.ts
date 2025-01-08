@@ -19,7 +19,7 @@ export class CardView {
         this._cardCatalogTemplate = cardCatalogTemplate;
     }
       // Метод для иницилизации превью карточки
-     getPreviewCardElement(cardData: Product)  {
+     getPreviewCardElement(cardData: Product, disableCardAction: boolean)  {
         const cardElement = this._cardPreviewTemplate.content.querySelector('.card').cloneNode(true) as HTMLElement;
         const cardCategory = cardElement.querySelector('.card__category');
         const cardTitle = cardElement.querySelector('.card__title');
@@ -41,8 +41,9 @@ export class CardView {
           cardButton.addEventListener('click', () => this.events.emit('cart:addCard', { card: cardData }));
         } else {
           cardButton.textContent = 'Не продается';
-          cardButton.disabled = true;
         }
+
+        cardButton.disabled = disableCardAction;
 
         return cardElement;
 
